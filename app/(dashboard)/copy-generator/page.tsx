@@ -79,7 +79,9 @@ export default function CopyGeneratorPage() {
         </p>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "400px 1fr", gap: 24, alignItems: "start" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "min(400px, 100%) 1fr", gap: 20, alignItems: "start" }}
+        className="mobile-stack"
+      >
         {/* Form */}
         <div
           style={{

@@ -132,7 +132,7 @@ export default function DashboardPage() {
           <h1
             style={{
               fontFamily: "var(--font-display)",
-              fontSize: 26,
+              fontSize: "clamp(20px, 5vw, 26px)",
               fontWeight: 700,
               color: "var(--text-primary)",
               marginBottom: 4,
@@ -196,9 +196,9 @@ export default function DashboardPage() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-          gap: 16,
-          marginBottom: 28,
+          gridTemplateColumns: "repeat(2, 1fr)",
+          gap: 12,
+          marginBottom: 24,
         }}
       >
         {isLoadingInsights ? (

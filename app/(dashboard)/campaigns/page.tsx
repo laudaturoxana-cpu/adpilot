@@ -184,6 +184,7 @@ export default function CampaignsPage() {
 
       {/* Table */}
       <div
+        className="mobile-scroll-x"
         style={{
           background: "var(--bg-surface)",
           border: "1px solid var(--bg-border)",
@@ -191,6 +192,7 @@ export default function CampaignsPage() {
           overflow: "hidden",
         }}
       >
+      <div style={{ minWidth: 640 }}>
         {/* Table header */}
         <div
           style={{
@@ -314,7 +316,8 @@ export default function CampaignsPage() {
             </div>
           ))
         )}
-      </div>
+      </div>{/* end minWidth wrapper */}
+      </div>{/* end scroll wrapper */}
 
       {/* New Campaign Modal */}
       {showNewModal && <NewCampaignModal onClose={() => setShowNewModal(false)} onCreated={fetchCampaigns} />}

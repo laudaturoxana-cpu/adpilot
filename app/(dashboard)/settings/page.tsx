@@ -129,9 +129,9 @@ function SettingsContent() {
   }
 
   return (
-    <div style={{ maxWidth: 640 }}>
-      <div style={{ marginBottom: 32 }}>
-        <h1 style={{ fontFamily: "var(--font-display)", fontSize: 24, fontWeight: 700, color: "var(--text-primary)", marginBottom: 4 }}>
+    <div style={{ maxWidth: 640, width: "100%" }}>
+      <div style={{ marginBottom: 28 }}>
+        <h1 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(20px, 5vw, 24px)", fontWeight: 700, color: "var(--text-primary)", marginBottom: 4 }}>
           Setări
         </h1>
         <p style={{ color: "var(--text-secondary)", fontSize: 14 }}>Gestionează profilul și conexiunile tale.</p>
