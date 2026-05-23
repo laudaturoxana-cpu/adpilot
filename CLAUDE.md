@@ -26,9 +26,13 @@ Rulezi obligatoriu, în ordine:
 ```bash
 npx tsc --noEmit          # zero erori TypeScript
 npm run build             # build de producție reușit
+npm audit --audit-level=high  # zero vulnerabilități high/critical
+git status                # verifici că nu există fișiere .env în lista de modificări
 ```
 
 Dacă oricare din comenzi eșuează, nu faci push. Rezolvi eroarea mai întâi.
+
+**Semnal de alarmă:** dacă `git status` arată orice fișier care conține `.env` (ex: `.env.local`, `.env.production`), oprești imediat și verifici `.gitignore` înainte de orice altceva.
 
 ---
 
