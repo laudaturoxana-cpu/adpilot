@@ -12,6 +12,7 @@ export interface Profile {
 export interface MetaConnection {
   id: string;
   user_id: string;
+  workspace_id?: string;
   meta_user_id: string;
   meta_user_name?: string;
   selected_ad_account_id?: string;
@@ -20,6 +21,80 @@ export interface MetaConnection {
   token_expires_at?: string;
   created_at: string;
   updated_at: string;
+}
+
+// ── Workspaces & RBAC ──
+export type WorkspacePlan = "free" | "starter" | "agency" | "enterprise";
+
+export type WorkspaceRole =
+  | "owner"
+  | "admin"
+  | "media_buyer"
+  | "strategist"
+  | "creative"
+  | "approver"
+  | "client"
+  | "viewer";
+
+export interface Workspace {
+  id: string;
+  name: string;
+  owner_id: string;
+  plan: WorkspacePlan;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WorkspaceMember {
+  id: string;
+  workspace_id: string;
+  user_id: string;
+  role: WorkspaceRole;
+  created_at: string;
+}
+
+/** Membru însoțit de rolul curentului — folosit în răspunsurile API. */
+export interface WorkspaceWithRole extends Workspace {
+  role: WorkspaceRole;
+}
+
+export interface BusinessProfile {
+  id: string;
+  workspace_id: string;
+  business_type?: string;
+  main_objective?: string;
+  products?: string;
+  country?: string;
+  currency?: string;
+  monthly_budget?: number;
+  target_cpa?: number;
+  min_roas?: number;
+  avg_order_value?: number;
+  profit_margin?: number;
+  conversion_events: string[];
+  landing_pages: string[];
+  brand_voice?: string;
+  forbidden_words: string[];
+  regulated_industry: boolean;
+  automation_level: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export type AuditActorType = "user" | "ai" | "system";
+
+export interface AuditLogEntry {
+  id: string;
+  workspace_id: string;
+  actor_id?: string;
+  actor_type: AuditActorType;
+  action: string;
+  entity_type?: string;
+  entity_id?: string;
+  before_state?: unknown;
+  after_state?: unknown;
+  reason?: string;
+  created_at: string;
 }
 
 // ── Meta Ads ──
