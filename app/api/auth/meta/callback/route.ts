@@ -29,6 +29,12 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${appUrl}/login`);
   }
 
+  // Workspace-ul pe care legăm conexiunea (setat la inițierea OAuth).
+  const workspaceId = request.cookies.get("meta_oauth_ws")?.value;
+  if (!workspaceId) {
+    return NextResponse.redirect(`${appUrl}/settings?error=no_workspace`);
+  }
+
   try {
     const shortToken = await exchangeCodeForToken(code);
     const longToken = await getLongLivedToken(shortToken.access_token);
@@ -46,18 +52,22 @@ export async function GET(request: NextRequest) {
       .from("meta_connections")
       .upsert({
         user_id: user.id,
+        workspace_id: workspaceId,
         access_token: encryptedToken,
         token_expires_at: expiresAt,
         meta_user_id: metaUser.id,
         meta_user_name: metaUser.name,
         is_active: true,
+        needs_reauth: false,
+        last_refreshed_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-      }, { onConflict: "user_id" });
+      }, { onConflict: "workspace_id" });
 
     if (dbError) throw dbError;
 
     const response = NextResponse.redirect(`${appUrl}/settings?success=meta_connected`);
     response.cookies.delete("meta_oauth_state");
+    response.cookies.delete("meta_oauth_ws");
     return response;
 
   } catch (err) {

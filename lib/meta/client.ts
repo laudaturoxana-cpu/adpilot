@@ -8,6 +8,14 @@ import {
 } from "./types";
 import type { CreateCampaignInput, UpdateCampaignInput, DateRange, InsightLevel } from "@/types";
 
+// Coduri Meta care indică throttling tranzitoriu — se reîncearcă cu backoff.
+const THROTTLE_CODES = new Set([4, 17, 613, 80004]);
+const MAX_RETRIES = 3;
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export class MetaAPIClient {
   private accessToken: string;
   private apiVersion = "v19.0";
@@ -108,28 +116,40 @@ export class MetaAPIClient {
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
 
-    // Token-ul se trimite în header, niciodată în URL (query string-urile
-    // ajung în log-uri de proxy/APM). Meta Graph API acceptă Bearer auth.
-    const response = await fetch(url, {
-      ...options,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${this.accessToken}`,
-        ...options.headers,
-      },
-    });
+    for (let attempt = 0; ; attempt++) {
+      // Token-ul se trimite în header, niciodată în URL (query string-urile
+      // ajung în log-uri de proxy/APM). Meta Graph API acceptă Bearer auth.
+      const response = await fetch(url, {
+        ...options,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.accessToken}`,
+          ...options.headers,
+        },
+      });
 
-    const json = await response.json();
+      const json = await response.json();
 
-    if (json.error) {
-      this.handleMetaError(json.error as MetaErrorResponse);
+      if (json.error) {
+        const error = json.error as MetaErrorResponse;
+        // Throttling tranzitoriu: backoff exponențial și reîncercare.
+        if ((THROTTLE_CODES.has(error.code) || response.status === 429) && attempt < MAX_RETRIES) {
+          await sleep(2 ** attempt * 1000);
+          continue;
+        }
+        this.handleMetaError(error);
+      }
+
+      if (!response.ok) {
+        if (response.status === 429 && attempt < MAX_RETRIES) {
+          await sleep(2 ** attempt * 1000);
+          continue;
+        }
+        throw new Error(`Meta API responded with status ${response.status}`);
+      }
+
+      return json as T;
     }
-
-    if (!response.ok) {
-      throw new Error(`Meta API responded with status ${response.status}`);
-    }
-
-    return json as T;
   }
 
   private handleMetaError(error: MetaErrorResponse): never {

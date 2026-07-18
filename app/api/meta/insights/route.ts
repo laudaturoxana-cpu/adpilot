@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { resolveWorkspaceContext } from "@/lib/auth/current-workspace";
 import { getMetaClient } from "@/lib/meta/connection";
 import { handleApiError } from "@/lib/api/errors";
 import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
@@ -13,14 +14,13 @@ export async function GET(request: NextRequest) {
   const level = (searchParams.get("level") ?? "campaign") as "account" | "campaign";
 
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Neautentificat" }, { status: 401 });
-
-  const rl = checkRateLimit(`meta:${user.id}`, META_RATE_LIMIT);
-  if (!rl.allowed) return rateLimitResponse(rl.retryAfterSeconds);
-
   try {
-    const { client, adAccountId } = await getMetaClient(user.id, supabase);
+    const { user, workspaceId } = await resolveWorkspaceContext(supabase, "view_data");
+
+    const rl = checkRateLimit(`meta:${user.id}`, META_RATE_LIMIT);
+    if (!rl.allowed) return rateLimitResponse(rl.retryAfterSeconds);
+
+    const { client, adAccountId } = await getMetaClient(supabase, workspaceId);
     if (!adAccountId) {
       return NextResponse.json({ error: "Niciun cont de reclame selectat" }, { status: 400 });
     }
@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
     const { data: cached } = await supabase
       .from("insights_cache")
       .select("data, expires_at")
-      .eq("user_id", user.id)
+      .eq("workspace_id", workspaceId)
       .eq("ad_account_id", adAccountId)
       .eq("date_range", cacheKey)
       .maybeSingle();
@@ -46,22 +46,21 @@ export async function GET(request: NextRequest) {
 
     const insights = await client.getInsights(adAccountId, { since, until }, level);
 
-    // onConflict pe (user_id, ad_account_id, date_range) — actualizează rândul
-    // existent în loc să insereze duplicate (vezi migrația 002).
     await supabase.from("insights_cache").upsert(
       {
         user_id: user.id,
+        workspace_id: workspaceId,
         ad_account_id: adAccountId,
         date_range: cacheKey,
         data: insights,
         cached_at: new Date().toISOString(),
         expires_at: new Date(Date.now() + CACHE_TTL_MS).toISOString(),
       },
-      { onConflict: "user_id,ad_account_id,date_range" }
+      { onConflict: "workspace_id,ad_account_id,date_range" }
     );
 
     return NextResponse.json({ data: insights, fromCache: false });
   } catch (err) {
-    return handleApiError("GET /api/meta/insights", err, user.id);
+    return handleApiError("GET /api/meta/insights", err);
   }
 }

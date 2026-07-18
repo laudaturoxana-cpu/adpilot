@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@/lib/supabase/server";
 import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
+import { resolveWorkspaceContext } from "@/lib/auth/current-workspace";
+import { handleApiError } from "@/lib/api/errors";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -9,8 +11,13 @@ const AI_RATE_LIMIT = 10;
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Neautentificat" }, { status: 401 });
+
+  let user, workspaceId;
+  try {
+    ({ user, workspaceId } = await resolveWorkspaceContext(supabase, "view_data"));
+  } catch (err) {
+    return handleApiError("POST /api/ai/analyze", err);
+  }
 
   const rl = checkRateLimit(`ai:${user.id}`, AI_RATE_LIMIT);
   if (!rl.allowed) return rateLimitResponse(rl.retryAfterSeconds);
@@ -68,11 +75,12 @@ Nu inventa date care nu există în raport.`;
         const { data: connection } = await supabase
           .from("meta_connections")
           .select("selected_ad_account_id")
-          .eq("user_id", user.id)
-          .single();
+          .eq("workspace_id", workspaceId)
+          .maybeSingle();
 
         await supabase.from("ai_analyses").insert({
           user_id: user.id,
+          workspace_id: workspaceId,
           ad_account_id: connection?.selected_ad_account_id ?? "unknown",
           period_days: period,
           raw_data: insights,

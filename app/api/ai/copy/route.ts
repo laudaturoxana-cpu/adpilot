@@ -3,6 +3,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@/lib/supabase/server";
 import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { handleApiError } from "@/lib/api/errors";
+import { resolveWorkspaceContext } from "@/lib/auth/current-workspace";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -10,8 +11,13 @@ const AI_RATE_LIMIT = 10;
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Neautentificat" }, { status: 401 });
+
+  let user, workspaceId;
+  try {
+    ({ user, workspaceId } = await resolveWorkspaceContext(supabase, "propose"));
+  } catch (err) {
+    return handleApiError("POST /api/ai/copy", err);
+  }
 
   const rl = checkRateLimit(`ai:${user.id}`, AI_RATE_LIMIT);
   if (!rl.allowed) return rateLimitResponse(rl.retryAfterSeconds);
@@ -71,6 +77,7 @@ Răspunde EXCLUSIV cu JSON valid, fără text înainte sau după:
     // Save to DB
     await supabase.from("generated_copy").insert({
       user_id: user.id,
+      workspace_id: workspaceId,
       product,
       audience,
       objective,

@@ -1,6 +1,14 @@
+import type { User } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import type { createClient } from "@/lib/supabase/server";
-import { listUserWorkspaces } from "@/lib/auth/workspace";
+import {
+  listUserWorkspaces,
+  requireUser,
+  requireWorkspacePermission,
+  type Permission,
+} from "@/lib/auth/workspace";
+import { ForbiddenError } from "@/lib/auth/errors";
+import type { WorkspaceRole } from "@/types";
 
 type SupabaseServerClient = Awaited<ReturnType<typeof createClient>>;
 
@@ -26,4 +34,27 @@ export async function getCurrentWorkspaceId(
   if (workspaces.length === 0) return null;
   if (cookieWs && workspaces.some((w) => w.id === cookieWs)) return cookieWs;
   return workspaces[0].id;
+}
+
+export interface WorkspaceContext {
+  user: User;
+  workspaceId: string;
+  role: WorkspaceRole;
+}
+
+/**
+ * Rezolvă contextul unei cereri autentificate: user + workspace curent + rol,
+ * verificând (opțional) o permisiune. Aruncă 401 dacă nu e autentificat, 403
+ * dacă nu are workspace sau nu are permisiunea. Folosit de rutele Meta ca să
+ * fie workspace-scoped uniform.
+ */
+export async function resolveWorkspaceContext(
+  supabase: SupabaseServerClient,
+  permission?: Permission
+): Promise<WorkspaceContext> {
+  const user = await requireUser(supabase);
+  const workspaceId = await getCurrentWorkspaceId(supabase, user.id);
+  if (!workspaceId) throw new ForbiddenError("Niciun workspace disponibil");
+  const role = await requireWorkspacePermission(supabase, workspaceId, user.id, permission);
+  return { user, workspaceId, role };
 }

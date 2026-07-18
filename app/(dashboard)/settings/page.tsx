@@ -11,12 +11,12 @@ import { BusinessProfileSection } from "@/components/settings/BusinessProfileSec
 import { MembersSection } from "@/components/settings/MembersSection";
 
 interface MetaConnection {
-  id: string;
   meta_user_name?: string;
   selected_ad_account_id?: string;
   selected_ad_account_name?: string;
   is_active: boolean;
   token_expires_at?: string;
+  needs_reauth?: boolean;
 }
 
 interface AdAccount {
@@ -79,8 +79,15 @@ function SettingsContent() {
       if (!user) return;
       const { data: profileData } = await supabase.from("profiles").select("*").eq("id", user.id).single();
       setProfile(profileData);
-      const { data: conn } = await supabase.from("meta_connections").select("*").eq("user_id", user.id).single();
-      setMetaConnection(conn);
+      try {
+        const res = await fetch("/api/meta/connection");
+        if (res.ok) {
+          const { data } = await res.json();
+          setMetaConnection(data?.connected ? { ...data, is_active: true } : null);
+        }
+      } catch {
+        // non-critic
+      }
     }
     load();
   }, []);
@@ -91,9 +98,12 @@ function SettingsContent() {
 
   async function handleDisconnectMeta() {
     if (!confirm("Ești sigur că vrei să deconectezi Meta Ads?")) return;
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-    await supabase.from("meta_connections").update({ is_active: false }).eq("user_id", user.id);
+    const res = await fetch("/api/meta/disconnect", { method: "POST" });
+    if (!res.ok) {
+      const { error } = await res.json();
+      toast.error(error ?? "Nu s-a putut deconecta Meta");
+      return;
+    }
     setMetaConnection(null);
     toast.success("Meta Ads deconectat");
   }
@@ -115,12 +125,16 @@ function SettingsContent() {
   }
 
   async function selectAdAccount(account: AdAccount) {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-    await supabase.from("meta_connections").update({
-      selected_ad_account_id: account.id,
-      selected_ad_account_name: account.name,
-    }).eq("user_id", user.id);
+    const res = await fetch("/api/meta/select-account", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: account.id, name: account.name }),
+    });
+    if (!res.ok) {
+      const { error } = await res.json();
+      toast.error(error ?? "Nu s-a putut selecta contul");
+      return;
+    }
     setMetaConnection((prev) => prev ? {
       ...prev,
       selected_ad_account_id: account.id,

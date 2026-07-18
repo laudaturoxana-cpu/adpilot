@@ -43,8 +43,15 @@ export default function DashboardPage() {
       const { data: profileData } = await supabase.from("profiles").select("*").eq("id", user.id).single();
       setProfile(profileData);
 
-      const { data: conn } = await supabase.from("meta_connections").select("is_active, selected_ad_account_id").eq("user_id", user.id).single();
-      setHasMetaConnection(!!(conn?.is_active && conn?.selected_ad_account_id));
+      try {
+        const res = await fetch("/api/meta/connection");
+        if (res.ok) {
+          const { data } = await res.json();
+          setHasMetaConnection(!!(data?.connected && data?.selected_ad_account_id));
+        }
+      } catch {
+        // non-critic
+      }
 
       const { data: lastAnalysis } = await supabase
         .from("ai_analyses")
