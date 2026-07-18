@@ -2,6 +2,7 @@
 
 import { Bell, RefreshCw, Menu } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { WorkspaceSwitcher } from "@/components/layout/WorkspaceSwitcher";
 
 const pageTitles: Record<string, string> = {
   "/dashboard": "Dashboard",
@@ -67,12 +68,12 @@ export function Navbar({ onMenuToggle }: NavbarProps) {
       </button>
 
       <h1
+        className="hide-mobile"
         style={{
           fontFamily: "var(--font-display)",
           fontSize: 17,
           fontWeight: 600,
           color: "var(--text-primary)",
-          flex: 1,
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
@@ -80,6 +81,10 @@ export function Navbar({ onMenuToggle }: NavbarProps) {
       >
         {title}
       </h1>
+
+      <div style={{ flex: 1 }} />
+
+      <WorkspaceSwitcher />
 
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         <button

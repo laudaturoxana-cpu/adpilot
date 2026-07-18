@@ -5,8 +5,10 @@ import { GlowButton } from "@/components/adpilot/GlowButton";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import { useSearchParams, useRouter } from "next/navigation";
-import type { Profile } from "@/types";
+import type { Profile, WorkspaceRole } from "@/types";
 import { CheckCircle, AlertCircle, Link as LinkIcon, Unlink } from "lucide-react";
+import { BusinessProfileSection } from "@/components/settings/BusinessProfileSection";
+import { MembersSection } from "@/components/settings/MembersSection";
 
 interface MetaConnection {
   id: string;
@@ -39,9 +41,25 @@ function SettingsContent() {
   const [adAccounts, setAdAccounts] = useState<AdAccount[]>([]);
   const [isLoadingAccounts, setIsLoadingAccounts] = useState(false);
   const [isSavingProfile, setIsSavingProfile] = useState(false);
+  const [workspace, setWorkspace] = useState<{ id: string; role: WorkspaceRole } | null>(null);
   const searchParams = useSearchParams();
   const router = useRouter();
   const supabase = createClient();
+
+  useEffect(() => {
+    async function loadWorkspace() {
+      try {
+        const res = await fetch("/api/workspaces");
+        if (!res.ok) return;
+        const { data, current } = await res.json();
+        const ws = (data ?? []).find((w: { id: string }) => w.id === current) ?? data?.[0];
+        if (ws) setWorkspace({ id: ws.id, role: ws.role });
+      } catch {
+        // non-critic
+      }
+    }
+    loadWorkspace();
+  }, []);
 
   useEffect(() => {
     const success = searchParams.get("success");
@@ -277,6 +295,23 @@ function SettingsContent() {
           </div>
         )}
       </Section>
+
+      {/* Business profile (onboarding) */}
+      {workspace && (
+        <Section title="Setări business (AI context)">
+          <BusinessProfileSection
+            workspaceId={workspace.id}
+            canEdit={workspace.role === "owner" || workspace.role === "admin"}
+          />
+        </Section>
+      )}
+
+      {/* Members */}
+      {workspace && (
+        <Section title="Membri workspace">
+          <MembersSection workspaceId={workspace.id} />
+        </Section>
+      )}
     </div>
   );
 }

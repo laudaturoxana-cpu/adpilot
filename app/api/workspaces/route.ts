@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { requireUser, listUserWorkspaces } from "@/lib/auth/workspace";
+import { getCurrentWorkspaceId } from "@/lib/auth/current-workspace";
 import { writeAuditLog } from "@/lib/audit/log";
 import { handleApiError } from "@/lib/api/errors";
 import type { Workspace } from "@/types";
@@ -15,7 +16,8 @@ export async function GET() {
   try {
     const user = await requireUser(supabase);
     const workspaces = await listUserWorkspaces(supabase, user.id);
-    return NextResponse.json({ data: workspaces });
+    const current = await getCurrentWorkspaceId(supabase, user.id);
+    return NextResponse.json({ data: workspaces, current });
   } catch (err) {
     return handleApiError("GET /api/workspaces", err);
   }
