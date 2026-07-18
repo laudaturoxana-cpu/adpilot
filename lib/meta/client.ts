@@ -107,12 +107,14 @@ export class MetaAPIClient {
 
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
-    const separator = url.includes("?") ? "&" : "?";
 
-    const response = await fetch(`${url}${separator}access_token=${this.accessToken}`, {
+    // Token-ul se trimite în header, niciodată în URL (query string-urile
+    // ajung în log-uri de proxy/APM). Meta Graph API acceptă Bearer auth.
+    const response = await fetch(url, {
       ...options,
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${this.accessToken}`,
         ...options.headers,
       },
     });

@@ -1,32 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@/lib/supabase/server";
+import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-// Rate limiting — max 10 req/min per user
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-
-function checkRateLimit(userId: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(userId);
-  if (!entry || entry.resetAt < now) {
-    rateLimitMap.set(userId, { count: 1, resetAt: now + 60000 });
-    return true;
-  }
-  if (entry.count >= 10) return false;
-  entry.count++;
-  return true;
-}
+const AI_RATE_LIMIT = 10;
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Neautentificat" }, { status: 401 });
 
-  if (!checkRateLimit(user.id)) {
-    return NextResponse.json({ error: "Prea multe cereri. Încearcă din nou în 1 minut." }, { status: 429 });
-  }
+  const rl = checkRateLimit(`ai:${user.id}`, AI_RATE_LIMIT);
+  if (!rl.allowed) return rateLimitResponse(rl.retryAfterSeconds);
 
   const { insights, clientName = "client", period = 7 } = await request.json();
 
