@@ -126,14 +126,6 @@ export default function LandingPage() {
             <span style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--brand-accent)", boxShadow: "0 0 10px var(--brand-accent)" }} />
             <span style={{ fontSize: 12, color: "var(--text-primary)", fontFamily: "var(--font-body)" }}>ROAS +38%</span>
           </motion.div>
-          <motion.div
-            className="glass layer-pop"
-            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }}
-            style={{ position: "absolute", bottom: 18, left: -18, padding: "10px 14px", borderRadius: "var(--radius-md)", display: "flex", alignItems: "center", gap: 8 }}
-          >
-            <Sparkles size={13} color="var(--brand-primary)" />
-            <span style={{ fontSize: 12, color: "var(--text-primary)", fontFamily: "var(--font-body)" }}>3 recomandări noi</span>
-          </motion.div>
         </div>
       </section>
 
