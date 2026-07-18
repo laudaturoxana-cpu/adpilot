@@ -87,7 +87,7 @@ export class MetaAPIClient {
   ): Promise<MetaInsight[]> {
     const accountId = adAccountId.startsWith("act_") ? adAccountId : `act_${adAccountId}`;
     const params = new URLSearchParams({
-      fields: "campaign_id,campaign_name,account_id,account_name,impressions,reach,clicks,spend,ctr,cpc,cpp,cpm,actions",
+      fields: "campaign_id,campaign_name,account_id,account_name,impressions,reach,frequency,clicks,unique_clicks,spend,ctr,cpc,cpp,cpm,actions,action_values,cost_per_action_type",
       time_range: JSON.stringify(dateRange),
       level,
       limit: "100",

@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { MetricCard } from "@/components/adpilot/MetricCard";
 import { AIPanel } from "@/components/adpilot/AIPanel";
+import { AnalysisPanel } from "@/components/adpilot/AnalysisPanel";
 import { StatusBadge } from "@/components/adpilot/StatusBadge";
 import { GlowButton } from "@/components/adpilot/GlowButton";
 import { createClient } from "@/lib/supabase/client";
@@ -222,7 +223,14 @@ export default function DashboardPage() {
         )}
       </div>
 
-      {/* AI Analysis */}
+      {/* Structured deterministic analysis */}
+      {hasMetaConnection && (
+        <div style={{ marginBottom: 28 }}>
+          <AnalysisPanel days={period} />
+        </div>
+      )}
+
+      {/* AI Analysis (narrative) */}
       <div style={{ marginBottom: 28 }}>
         <AIPanel
           title="Analiză AI"

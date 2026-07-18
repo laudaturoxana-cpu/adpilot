@@ -49,6 +49,7 @@ export interface MetaInsight {
   cpp?: string;
   cpm?: string;
   actions?: MetaAction[];
+  action_values?: MetaAction[];
   cost_per_action_type?: MetaAction[];
   date_start: string;
   date_stop: string;
