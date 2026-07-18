@@ -39,19 +39,19 @@ export function handleApiError(
     return NextResponse.json({ error: error.getUserMessage() }, { status: 400 });
   }
 
-  // Eroare de configurare așteptată (Meta neconectat) — mesaj clar, 400,
+  // Eroare de configurare așteptată (Meta neconectat) - mesaj clar, 400,
   // fără logare ca eroare internă.
   if (error instanceof MetaNotConnectedError) {
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
 
-  // Erori de autorizare — 401/403 cu mesaj în română, fără logare ca eroare
+  // Erori de autorizare - 401/403 cu mesaj în română, fără logare ca eroare
   // internă (sunt fluxuri așteptate).
   if (error instanceof UnauthenticatedError || error instanceof ForbiddenError) {
     return NextResponse.json({ error: error.message }, { status: error.status });
   }
 
-  // Validare eșuată (Zod) — input invalid, 400, fără detalii tehnice.
+  // Validare eșuată (Zod) - input invalid, 400, fără detalii tehnice.
   if (error instanceof ZodError) {
     return NextResponse.json({ error: "Date invalide în cerere." }, { status: 400 });
   }

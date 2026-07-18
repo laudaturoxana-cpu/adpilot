@@ -121,7 +121,7 @@ export default function DashboardPage() {
     ? insights.reduce((s, i) => s + parseFloat(i.ctr || "0"), 0) / insights.length
     : 0;
 
-  // Chart data — simulated from insights
+  // Chart data - simulated from insights
   const chartData = insights.slice(0, 7).map((insight, i) => ({
     date: insight.date_start?.slice(5) ?? `Zi ${i + 1}`,
     spend: parseFloat(insight.spend || "0"),

@@ -8,7 +8,7 @@ import {
 } from "./types";
 import type { CreateCampaignInput, UpdateCampaignInput, DateRange, InsightLevel } from "@/types";
 
-// Coduri Meta care indică throttling tranzitoriu — se reîncearcă cu backoff.
+// Coduri Meta care indică throttling tranzitoriu - se reîncearcă cu backoff.
 const THROTTLE_CODES = new Set([4, 17, 613, 80004]);
 const MAX_RETRIES = 3;
 

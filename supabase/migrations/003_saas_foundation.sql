@@ -1,4 +1,4 @@
--- Migrație aditivă (Etapa 2 — Fundament SaaS). Nu modifică 001/002.
+-- Migrație aditivă (Etapa 2 - Fundament SaaS). Nu modifică 001/002.
 --
 -- Introduce multi-tenancy: workspaces, membri cu roluri, setări de business
 -- (onboarding) și audit log append-only. RLS pe fiecare tabel nou, bazat pe
@@ -7,7 +7,7 @@
 -- Tabelele existente user-scoped (meta_connections, insights_cache,
 -- generated_copy, ai_analyses) primesc coloana workspace_id (nullable, cu
 -- backfill) pentru a pregăti migrarea la acces workspace-scoped în Etapa 3.
--- RLS-ul lor NU se schimbă aici — rămâne user-scoped ca să nu rupem nimic.
+-- RLS-ul lor NU se schimbă aici - rămâne user-scoped ca să nu rupem nimic.
 
 -- ─────────────────────────────────────────────────────────────────────────
 -- 1. Tabele noi
@@ -203,7 +203,7 @@ begin
   for p in select id, email, full_name, agency_name from public.profiles loop
     insert into public.workspaces (name, owner_id)
     values (
-      coalesce(nullif(trim(p.agency_name), ''), nullif(trim(p.full_name), ''), split_part(p.email, '@', 1)) || ' — workspace',
+      coalesce(nullif(trim(p.agency_name), ''), nullif(trim(p.full_name), ''), split_part(p.email, '@', 1)) || ' Workspace',
       p.id
     )
     returning id into ws_id;
@@ -237,7 +237,7 @@ begin
 
   insert into public.workspaces (name, owner_id)
   values (
-    coalesce(new.raw_user_meta_data->>'full_name', split_part(new.email, '@', 1)) || ' — workspace',
+    coalesce(new.raw_user_meta_data->>'full_name', split_part(new.email, '@', 1)) || ' Workspace',
     new.id
   )
   returning id into ws_id;

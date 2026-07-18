@@ -49,7 +49,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
   const supabase = await createClient();
   try {
     const user = await requireUser(supabase);
-    // Setările de business sunt sensibile — doar owner/admin le pot modifica.
+    // Setările de business sunt sensibile - doar owner/admin le pot modifica.
     const role = await requireWorkspacePermission(supabase, id, user.id);
     if (role !== "owner" && role !== "admin") throw new ForbiddenError();
 

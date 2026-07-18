@@ -33,7 +33,7 @@ export default function DashboardError({
         Ceva nu a mers bine
       </h2>
       <p style={{ color: "var(--text-secondary)", maxWidth: 420 }}>
-        A apărut o eroare la încărcarea acestei secțiuni. Poți reîncerca — dacă
+        A apărut o eroare la încărcarea acestei secțiuni. Poți reîncerca - dacă
         problema persistă, revino peste câteva minute.
       </p>
       <GlowButton onClick={reset}>Reîncearcă</GlowButton>

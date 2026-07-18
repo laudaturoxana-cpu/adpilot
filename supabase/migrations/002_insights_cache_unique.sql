@@ -2,7 +2,7 @@
 --
 -- Problemă rezolvată: ruta /api/meta/insights făcea upsert fără onConflict,
 -- deci insera rânduri duplicate la infinit (tabelul creștea nelimitat), iar
--- `level` (account/campaign) nu intra în cheia de cache — datele se
+-- `level` (account/campaign) nu intra în cheia de cache - datele se
 -- suprascriau reciproc. Codul nou scrie date_range = `${days}-${level}` și
 -- face upsert cu onConflict pe (user_id, ad_account_id, date_range).
 --

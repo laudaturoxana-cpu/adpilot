@@ -257,15 +257,15 @@ export default function CampaignsPage() {
               </div>
               <StatusBadge status={campaign.status} />
               <span style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "var(--text-secondary)" }}>
-                {objectiveLabels[campaign.objective] ?? campaign.objective ?? "—"}
+                {objectiveLabels[campaign.objective] ?? campaign.objective ?? "-"}
               </span>
               <span style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: "var(--text-primary)" }}>
                 {campaign.daily_budget
                   ? `${(parseInt(campaign.daily_budget) / 100).toFixed(0)} RON`
-                  : "—"}
+                  : "-"}
               </span>
               <span style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: "var(--text-secondary)" }}>
-                —
+                -
               </span>
               <div style={{ display: "flex", gap: 6 }}>
                 <button

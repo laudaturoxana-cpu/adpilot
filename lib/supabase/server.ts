@@ -18,7 +18,7 @@ export async function createClient() {
             cookieStore.set(name, value, options)
           );
         } catch {
-          // Server Component — cookies set by middleware
+          // Server Component - cookies set by middleware
         }
       },
     },
@@ -26,15 +26,15 @@ export async function createClient() {
 }
 
 /**
- * Service-role client — bypasses RLS. Exclusiv server-side, doar pentru
+ * Service-role client - bypasses RLS. Exclusiv server-side, doar pentru
  * operații administrative. Nu folosește cookie-urile requestului (nu are
  * context de sesiune) și nu persistă nimic. Aruncă eroare dacă cheia lipsește
- * — nu degradează silențios la anon key.
+ * - nu degradează silențios la anon key.
  */
 export function createServiceClient() {
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!serviceKey) {
-    throw new Error("SUPABASE_SERVICE_ROLE_KEY lipsește — service client indisponibil");
+    throw new Error("SUPABASE_SERVICE_ROLE_KEY lipsește - service client indisponibil");
   }
   return createSupabaseClient(SUPABASE_URL, serviceKey, {
     auth: {

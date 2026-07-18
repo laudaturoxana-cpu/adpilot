@@ -53,7 +53,7 @@ export interface WorkspaceMember {
   created_at: string;
 }
 
-/** Membru însoțit de rolul curentului — folosit în răspunsurile API. */
+/** Membru însoțit de rolul curentului - folosit în răspunsurile API. */
 export interface WorkspaceWithRole extends Workspace {
   role: WorkspaceRole;
 }

@@ -18,10 +18,10 @@ export interface AuditEntryInput {
 
 /**
  * Scrie o intrare append-only în audit_log. NU logăm niciodată secrete
- * (token-uri, chei) în before/after — apelantul e responsabil să nu le pună
+ * (token-uri, chei) în before/after - apelantul e responsabil să nu le pună
  * (AGENTS.md §15).
  *
- * Eșecul de audit se loghează server-side dar NU aruncă — nu vrem ca o eroare
+ * Eșecul de audit se loghează server-side dar NU aruncă - nu vrem ca o eroare
  * de audit să rupă operația principală deja executată.
  */
 export async function writeAuditLog(

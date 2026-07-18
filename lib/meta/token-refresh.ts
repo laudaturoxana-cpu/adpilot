@@ -24,7 +24,7 @@ function computeExpiry(expiresInSeconds?: number): string {
  * Returnează un access token valid (în clar) pentru o conexiune. Dacă expiră
  * curând, încearcă re-exchange-ul long-lived și persistă noul token criptat.
  * La eșec (permisiuni retrase / token invalidat), marchează needs_reauth și
- * returnează token-ul curent — lăsăm apelul Meta să eșueze cu mesaj clar.
+ * returnează token-ul curent - lăsăm apelul Meta să eșueze cu mesaj clar.
  */
 export async function ensureFreshToken(
   supabase: AnySupabase,

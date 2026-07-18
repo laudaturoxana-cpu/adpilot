@@ -22,8 +22,8 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AdPilot — Reclamele tale. Pe pilot automat.",
-  description: "Conectează-ți contul Meta Ads și lasă AI-ul să analizeze, optimizeze și genereze copy pentru campanii — în timp real.",
+  title: "AdPilot - Reclamele tale. Pe pilot automat.",
+  description: "Conectează-ți contul Meta Ads și lasă AI-ul să analizeze, optimizeze și genereze copy pentru campanii - în timp real.",
   keywords: ["meta ads", "facebook ads", "AI marketing", "ad management", "Romania"],
 };
 

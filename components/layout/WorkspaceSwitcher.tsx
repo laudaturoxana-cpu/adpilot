@@ -33,7 +33,7 @@ export function WorkspaceSwitcher() {
       setWorkspaces(data ?? []);
       setCurrentId(current ?? data?.[0]?.id ?? null);
     } catch {
-      // silențios — switcher-ul e non-critic
+      // silențios - switcher-ul e non-critic
     }
   }
 

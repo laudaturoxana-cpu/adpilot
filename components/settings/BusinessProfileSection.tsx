@@ -33,12 +33,12 @@ const empty: FormState = {
 };
 
 const automationLevels = [
-  { value: "0", label: "L0 — Doar analiză" },
-  { value: "1", label: "L1 — Analiză + recomandări" },
-  { value: "2", label: "L2 — Creare drafturi" },
-  { value: "3", label: "L3 — Auto pause reclame slabe" },
-  { value: "4", label: "L4 — Auto buget (în limite)" },
-  { value: "5", label: "L5 — Autopilot complet (în limite)" },
+  { value: "0", label: "L0 · Doar analiză" },
+  { value: "1", label: "L1 · Analiză și recomandări" },
+  { value: "2", label: "L2 · Creare drafturi" },
+  { value: "3", label: "L3 · Auto pause reclame slabe" },
+  { value: "4", label: "L4 · Auto buget (în limite)" },
+  { value: "5", label: "L5 · Autopilot complet (în limite)" },
 ];
 
 function toForm(p: BusinessProfile | null): FormState {

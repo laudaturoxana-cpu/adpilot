@@ -7,7 +7,7 @@ import { handleApiError } from "@/lib/api/errors";
 export async function POST() {
   const supabase = await createClient();
   try {
-    // Deconectarea Meta e sensibilă — doar owner/admin.
+    // Deconectarea Meta e sensibilă - doar owner/admin.
     const { user, workspaceId, role } = await resolveWorkspaceContext(supabase, "manage_automation");
     void role;
 

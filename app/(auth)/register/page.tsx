@@ -44,7 +44,7 @@ export default function RegisterPage() {
   return (
     <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
       <div style={{ display: "flex", flex: 1, flexWrap: "wrap" }}>
-        {/* Left — Form */}
+        {/* Left - Form */}
         <div
           className="mobile-full"
           style={{
@@ -68,7 +68,7 @@ export default function RegisterPage() {
               14 zile gratuit. Fără card de credit.
             </p>
             <form onSubmit={handleSubmit}>
-              {/* Nume + Agenție — stacked pe mobile */}
+              {/* Nume + Agenție - stacked pe mobile */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
                 <FormInput label="Nume complet" value={form.fullName} onChange={(v) => setForm({ ...form, fullName: v })} placeholder="Roxana Laudatu" required />
                 <FormInput label="Agenție" value={form.agencyName} onChange={(v) => setForm({ ...form, agencyName: v })} placeholder="DoMarketing.ro" />
@@ -109,7 +109,7 @@ export default function RegisterPage() {
           </div>
         </div>
 
-        {/* Right — Visual */}
+        {/* Right - Visual */}
         <div
           className="hide-mobile"
           style={{
@@ -125,14 +125,17 @@ export default function RegisterPage() {
             overflow: "hidden",
           }}
         >
-          <div style={{ position: "absolute", top: "20%", left: "20%", width: 400, height: 400, background: "radial-gradient(circle, rgba(14,165,233,0.08) 0%, transparent 70%)", pointerEvents: "none" }} />
-          <blockquote style={{ fontFamily: "var(--font-display)", fontSize: "clamp(24px, 3vw, 34px)", fontWeight: 700, color: "var(--text-primary)", textAlign: "center", lineHeight: 1.3, marginBottom: 40, position: "relative", zIndex: 1 }}>
+          <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
+            <div className="aurora-blob" style={{ top: "12%", left: "10%", width: 360, height: 360, background: "rgba(14,165,233,0.25)" }} />
+            <div className="aurora-blob" style={{ bottom: "6%", right: "8%", width: 320, height: 320, background: "rgba(110,231,183,0.16)", animationDelay: "-8s" }} />
+          </div>
+          <blockquote className="animate-float" style={{ fontFamily: "var(--font-display)", fontSize: "clamp(24px, 3vw, 34px)", fontWeight: 700, color: "var(--text-primary)", textAlign: "center", lineHeight: 1.3, marginBottom: 40, position: "relative", zIndex: 1 }}>
             "Reclamele tale,
             <br />
             <span className="gradient-text">pe pilot automat.</span>"
           </blockquote>
           <div style={{ display: "flex", flexDirection: "column", gap: 12, position: "relative", zIndex: 1 }}>
-            {["14 zile gratuit — fără card", "Conectare Meta în 2 minute", "Analiză AI a campaniilor tale"].map((f) => (
+            {["14 zile gratuit - fără card", "Conectare Meta în 2 minute", "Analiză AI a campaniilor tale"].map((f) => (
               <div key={f} style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <span style={{ color: "var(--brand-accent)", fontSize: 16 }}>✓</span>
                 <span style={{ fontFamily: "var(--font-body)", fontSize: 15, color: "var(--text-secondary)" }}>{f}</span>

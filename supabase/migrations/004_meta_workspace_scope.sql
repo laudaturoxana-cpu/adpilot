@@ -1,4 +1,4 @@
--- Migrație aditivă (Etapa 3 — Date Meta workspace-scoped). Nu modifică 001-003.
+-- Migrație aditivă (Etapa 3 - Date Meta workspace-scoped). Nu modifică 001-003.
 --
 -- După ce 003 a adăugat workspace_id (cu backfill) pe tabelele de date, aici:
 --  1. facem workspace_id NOT NULL pe ele
@@ -65,7 +65,7 @@ create policy "Members manage ai analyses" on public.ai_analyses
   with check (public.is_workspace_member(workspace_id));
 
 -- ─────────────────────────────────────────────────────────────────────────
--- 5. ad_accounts — conturile publicitare importate în workspace
+-- 5. ad_accounts - conturile publicitare importate în workspace
 -- ─────────────────────────────────────────────────────────────────────────
 create table public.ad_accounts (
   id uuid default uuid_generate_v4() primary key,

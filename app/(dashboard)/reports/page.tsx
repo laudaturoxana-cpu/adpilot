@@ -44,7 +44,7 @@ export default function ReportsPage() {
   const avgCtr = insights.length ? insights.reduce((s, i) => s + parseFloat(i.ctr || "0"), 0) / insights.length : 0;
 
   const chartData = insights.map((i) => ({
-    name: i.campaign_name?.slice(0, 20) ?? "—",
+    name: i.campaign_name?.slice(0, 20) ?? "-",
     spend: parseFloat(i.spend || "0"),
     clicks: parseInt(i.clicks || "0"),
     reach: Math.round(parseInt(i.reach || "0") / 1000),

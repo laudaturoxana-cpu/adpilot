@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Niciun cont de reclame selectat" }, { status: 400 });
     }
 
-    // Cheia de cache include level — altfel datele account-level și
+    // Cheia de cache include level - altfel datele account-level și
     // campaign-level se suprascriau reciproc pentru aceeași perioadă.
     const cacheKey = `${days}-${level}`;
 

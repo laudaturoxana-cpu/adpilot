@@ -54,7 +54,7 @@ export function Navbar({ onMenuToggle }: NavbarProps) {
         gap: 12,
       }}
     >
-      {/* Hamburger — vizibil doar pe mobile */}
+      {/* Hamburger - vizibil doar pe mobile */}
       <button
         className="show-mobile"
         onClick={onMenuToggle}

@@ -37,7 +37,7 @@ export default function LoginPage() {
         flexDirection: "column",
       }}
     >
-      {/* Layout wrapper — row pe desktop, column pe mobile */}
+      {/* Layout wrapper - row pe desktop, column pe mobile */}
       <div
         style={{
           display: "flex",
@@ -45,7 +45,7 @@ export default function LoginPage() {
           flexWrap: "wrap",
         }}
       >
-        {/* Left — Form */}
+        {/* Left - Form */}
         <div
           className="mobile-full"
           style={{
@@ -141,7 +141,7 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Right — Visual (ascuns pe mobile mic) */}
+        {/* Right - Visual (ascuns pe mobile mic) */}
         <div
           className="hide-mobile"
           style={{
@@ -157,8 +157,12 @@ export default function LoginPage() {
             overflow: "hidden",
           }}
         >
-          <div style={{ position: "absolute", top: "20%", left: "20%", width: 400, height: 400, background: "radial-gradient(circle, rgba(14,165,233,0.08) 0%, transparent 70%)", pointerEvents: "none" }} />
+          <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
+            <div className="aurora-blob" style={{ top: "12%", left: "10%", width: 360, height: 360, background: "rgba(14,165,233,0.25)" }} />
+            <div className="aurora-blob" style={{ bottom: "6%", right: "8%", width: 320, height: 320, background: "rgba(110,231,183,0.16)", animationDelay: "-8s" }} />
+          </div>
           <blockquote
+            className="animate-float"
             style={{
               fontFamily: "var(--font-display)",
               fontSize: "clamp(24px, 3vw, 34px)",
